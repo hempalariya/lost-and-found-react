@@ -4,6 +4,7 @@ import AppLayout from './utils/AppLayout'
 import Home from './utils/Home'
 import Register from './features/auth/Register'
 import Login from './features/auth/Login'
+import Report from './features/report/Report'
 
 
 const router = createBrowserRouter([
@@ -21,6 +22,10 @@ const router = createBrowserRouter([
       {
         path: '/login',
         element: <Login/>
+      },
+      {
+        path: '/report',
+        element: <Report/>
       }
     ]
   }

@@ -11,7 +11,7 @@ const inputStyle =
 export default function Register() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, message, error } = useSelector((state) => state.user);
+  const { loading, error, user } = useSelector((state) => state.user);
 
   console.log(loading, error, user);
 
@@ -85,4 +85,4 @@ export default function Register() {
       </div>
     </div>
   );
-}
+} 
