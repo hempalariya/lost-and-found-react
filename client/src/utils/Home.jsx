@@ -1,18 +1,26 @@
-import React, { useState } from "react";
-import ItemCard from "./ItemCard";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchFoundReports,
+  fetchLostReports,
+} from "../features/report/reportSlice";
+
 import Button from "./Button";
 import HomeLost from "./HomeLost";
 import HomeFound from "./HomeFound";
-import { useSelector } from "react-redux";
 
 const activeClass = " bg-blue-500 text-blue-50";
 
 export default function Home() {
   const [active, setActive] = useState("found");
 
-  const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const { lost, found, loading } = useSelector((state) => state.reports);
 
-  console.log(user);
+  useEffect(() => {
+    dispatch(fetchFoundReports());
+    dispatch(fetchLostReports());
+  }, []);
 
   return (
     <div className="lg:w-2/3 m-auto">
@@ -34,8 +42,8 @@ export default function Home() {
           Lost
         </Button>
       </div>
-      {active === "lost" && <HomeLost />}
-      {active === "found" && <HomeFound />}
+      {active === "lost" && <HomeLost data={lost} />}
+      {active === "found" && <HomeFound data={found} />}
     </div>
   );
 }

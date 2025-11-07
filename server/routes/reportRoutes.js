@@ -5,6 +5,7 @@ import {
   createReport,
   getFoundReport,
   getLostReport,
+  getReport,
   updateReport,
   deleteReport,
 } from "../controllers/reportController.js";
@@ -29,6 +30,7 @@ const reportRouter = express.Router();
 reportRouter.post("/", upload.single("image"), createReport);
 reportRouter.get("/lost-report", getLostReport);
 reportRouter.get("/found-report", getFoundReport);
+reportRouter.get("/:id", getReport)
 reportRouter.delete("/delete-report", deleteReport);
 
 export default reportRouter;

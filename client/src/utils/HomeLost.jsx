@@ -2,29 +2,13 @@ import React from 'react'
 import ItemCard from './ItemCard'
 import Container from './Container'
 
-const fakeLostData = [{
-        itemName: 'Adidas Bag',
-        itemDescription: 'A black bag, in good condition, bottle pocket on both side',
-        location: 'Mallital, Bhimtal',
-        img: ''
-},
-{
-        itemName: 'Keys',
-        itemDescription: 'two keys, with keychian with batman log',
-        location: 'Mallital, Bhimtal',
-        img:''
-},
-{
-        itemName: 'Adidas Bag',
-        itemDescription: 'A black bag, in good condition, bottle pocket on both side',
-        location: 'Mallital, Bhimtal',
-}
-]
-export default function HomeLost() {
+
+export default function HomeLost({data}) {
   return (
     <Container>
-        {fakeLostData.map((item) => (
-          <ItemCard item={item} />
+      {data.length === 0 && <h1>No Lost Data is listed</h1>}
+        {data.map((item) => (
+          <ItemCard item={item}  key = {item._id}/>
         ))}
     </Container>
   )

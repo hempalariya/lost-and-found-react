@@ -13,6 +13,9 @@ export default function Report() {
     location: "",
     reportType: "lost",
     image: null,
+    contactName: "",
+    contactEmail: "",
+    contactNumber: "",
   });
 
   const navigate = useNavigate();
@@ -29,6 +32,9 @@ export default function Report() {
     formData.append("location", reportData.location);
     formData.append("reportType", reportData.reportType);
     formData.append("image", reportData.image);
+    formData.append("contactName", reportData.contactName || "");
+    formData.append("contactEmail", reportData.contactEmail || "");
+    formData.append("contactNumber", reportData.contactNumber || "");
 
     try {
       const response = await axios.post("/report", formData, {
@@ -107,6 +113,29 @@ export default function Report() {
             </span>
           </label>
         </div>
+        <input
+          type="text"
+          name="contactName"
+          placeholder="Your name (optional)"
+          className={inputStyle}
+          onChange={(e) => handleChange(e.target.value, e.target.name)}
+        />
+
+        <input
+          type="email"
+          name="contactEmail"
+          placeholder="Your email (optional)"
+          className={inputStyle}
+          onChange={(e) => handleChange(e.target.value, e.target.name)}
+        />
+
+        <input
+          type="tel"
+          name="contactNumber"
+          placeholder="Your phone (optional)"
+          className={inputStyle}
+          onChange={(e) => handleChange(e.target.value, e.target.name)}
+        />
         <Button type="submit">Report</Button>
       </form>
     </div>

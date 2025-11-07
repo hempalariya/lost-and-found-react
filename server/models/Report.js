@@ -20,6 +20,15 @@ const reportSchema = new mongoose.Schema({
     image: {
         type: String,
         required: true
+    },
+    contactName: {
+        type: String,
+    },
+    contactEmail: {
+        type: String
+    },
+    contactNumber: {
+        type: String
     }
 }, {timestamps: true})
 
