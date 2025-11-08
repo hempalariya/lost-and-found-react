@@ -8,7 +8,7 @@ export const registerUser = createAsyncThunk(
       const response = await axios.post("/auth", userData);
       if (response.data?.token) {
         localStorage.setItem("token", response.data.token);
-        localStorage.setItem("user", JSON.stringify(response.data.newUser));
+        localStorage.setItem("user", JSON.stringify(response.data.user));
       }
       return response.data;
     } catch (error) {
@@ -43,7 +43,7 @@ const userSlice = createSlice({
     loading: false,
     message: "",
     error: "",
-    user: JSON.parse(localStorage.getItem("user") || "null"),
+    user: JSON.parse(localStorage.getItem("user") || null),
     token: localStorage.getItem("token") || null,
   },
 
@@ -62,7 +62,7 @@ const userSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload?.newUser || null;
+        state.user = action.payload;
         state.message = action.payload?.message || "Registration successful";
       })
       .addCase(registerUser.rejected, (state, action) => {
@@ -74,7 +74,7 @@ const userSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload?.user || null;
+        state.user = action.payload;
         state.message = "Login successful";
       })
       .addCase(loginUser.rejected, (state, action) => {

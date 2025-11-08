@@ -37,8 +37,12 @@ export default function Report() {
     formData.append("contactNumber", reportData.contactNumber || "");
 
     try {
+      const token = localStorage.getItem("token");
       const response = await axios.post("/report", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: {
+          "Content-Type": "multipart/form-data",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
       });
       console.log(response.data);
       navigate("/");

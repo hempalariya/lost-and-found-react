@@ -63,9 +63,13 @@ export const getReport = async (req, res) => {
   }
 };
 
-export const updateReport = async () => {};
+export const updateReport = async (req, res) => {
+  return res.status(501).json({ message: "Not implemented" });
+};
 
-export const deleteReport = async () => {};
+export const deleteReport = async (req, res) => {
+  return res.status(501).json({ message: "Not implemented" });
+};
 
 export const getMyReports = async (req, res) => {
   try {

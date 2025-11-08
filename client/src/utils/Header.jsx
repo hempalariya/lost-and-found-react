@@ -26,9 +26,9 @@ export default function Header() {
             <NavButton to = {linkTo}>Report</NavButton>
           {user && <div className='flex items-center'><p>welcome {user.userName}</p> <Button onClick={handleLogout}>Logout</Button>
           <Link to="/my-reports">My Reports</Link>
-          </div>
+          </div>}
           
-}
+          
         </nav>
     </header>
   )
