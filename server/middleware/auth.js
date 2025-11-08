@@ -1,12 +1,20 @@
-import jwt from "jsonwebtoken";
+import jwt from 'jsonwebtoken';
+import User from '../models/User.js';
 
-export default function auth(req, res, next) {
-  const token = req.headers.authorization?.split(" ")[1];
-  if (!token) return res.status(401).json({ message: "No Token" });
+const protect = async (req, res, next) => {
   try {
-    const decoded = jwt.varify(token, process.env.SECRET);
-    req.userId = decoded.id;
-  } catch (error) {
-    res.status(401).json({ message: "Token invalid" });
+    const authHeader = req.headers.authorization || req.headers.Authorization;
+    if (!authHeader?.startsWith('Bearer ')) {
+      return res.status(401).json({ message: 'Not authorized' });
+    }
+    const token = authHeader.split(' ')[1];
+    const decoded = jwt.verify(token, process.env.SECRET);
+    req.user = await User.findById(decoded.id).select('-password');
+    if (!req.user) return res.status(401).json({ message: 'User not found' });
+    next();
+  } catch (err) {
+    return res.status(401).json({ message: 'Not authorized' });
   }
-}
+};
+
+export default protect;

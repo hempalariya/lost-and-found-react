@@ -1,34 +1,38 @@
 import Report from "../models/Report.js";
 
 export const createReport = async (req, res) => {
-  const {
-    itemName,
-    description,
-    location,
-    reportType,
-    contactName,
-    contactEmail,
-    contactNumber,
-  } = req.body;
-  const imagePath = req.file ? `uploads/${req.file.filename}` : null;
+  try {
+    const {
+      itemName,
+      description,
+      location,
+      reportType,
+      contactName,
+      contactEmail,
+      contactNumber,
+    } = req.body;
+    const imagePath = req.file ? `uploads/${req.file.filename}` : null;
 
-  const newReport = await Report.create({
-    itemName,
-    description,
-    location,
-    reportType,
-    image: imagePath,
-    contactEmail,
-    contactName,
-    contactNumber,
-    createdBy: req.userId,
-  });
+    const newReport = await Report.create({
+      itemName,
+      description,
+      location,
+      reportType,
+      image: imagePath,
+      contactEmail,
+      contactName,
+      contactNumber,
+      createdBy: req.user?._id || req.user?.id,
+    });
 
-  res.json({
-    success: true,
-    message: "Report register",
-    data: newReport,
-  });
+    res.json({
+      success: true,
+      message: "Report register",
+      data: newReport,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 export const getLostReport = async (req, res) => {
@@ -65,8 +69,11 @@ export const deleteReport = async () => {};
 
 export const getMyReports = async (req, res) => {
   try {
-    const reports = await Report.find({ createdBy: req.userId });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+    const userId = req.user?._id || req.user?.id;
+    if (!userId) return res.status(401).json({ message: "Not authorized" });
+    const reports = await Report.find({ createdBy: userId }).sort({ createdAt: -1 });
+    res.status(200).json(reports);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };
