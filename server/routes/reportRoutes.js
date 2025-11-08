@@ -1,6 +1,7 @@
 import express from "express";
 import multer from "multer"
 import path from "path"
+import auth from "../middleware/auth.js";
 import {
   createReport,
   getFoundReport,
@@ -8,6 +9,7 @@ import {
   getReport,
   updateReport,
   deleteReport,
+  getMyReports
 } from "../controllers/reportController.js";
 
 
@@ -27,10 +29,11 @@ const upload = multer({storage: storage})
 
 const reportRouter = express.Router();
 
-reportRouter.post("/", upload.single("image"), createReport);
+reportRouter.post("/", auth, upload.single("image"), createReport);
 reportRouter.get("/lost-report", getLostReport);
 reportRouter.get("/found-report", getFoundReport);
 reportRouter.get("/:id", getReport)
 reportRouter.delete("/delete-report", deleteReport);
 
+reportRouter.get("/my-reports", auth, getMyReports)
 export default reportRouter;

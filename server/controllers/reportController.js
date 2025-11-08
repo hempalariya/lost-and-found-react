@@ -21,6 +21,7 @@ export const createReport = async (req, res) => {
     contactEmail,
     contactName,
     contactNumber,
+    createdBy: req.userId,
   });
 
   res.json({
@@ -61,3 +62,11 @@ export const getReport = async (req, res) => {
 export const updateReport = async () => {};
 
 export const deleteReport = async () => {};
+
+export const getMyReports = async (req, res) => {
+  try {
+    const reports = await Report.find({ createdBy: req.userId });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

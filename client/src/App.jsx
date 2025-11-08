@@ -6,6 +6,7 @@ import Register from "./features/auth/Register";
 import Login from "./features/auth/Login";
 import Report from "./features/report/Report";
 import ReportDetails from "./features/report/ReportDetails";
+import MyReports from "./features/report/MyReports";
 
 const router = createBrowserRouter([
   {
@@ -31,6 +32,10 @@ const router = createBrowserRouter([
         path: "/report/:id",
         element: <ReportDetails />,
       },
+      {
+        path: "my-reports",
+        element: <MyReports />
+      }
     ],
   },
 ]);

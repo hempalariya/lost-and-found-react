@@ -3,6 +3,7 @@ import NavButton from './NavButton'
 import {useSelector, useDispatch} from "react-redux"
 import { logout } from '../features/auth/userSlice'
 import Button from './Button'
+import { Link } from 'react-router-dom'
 
 
 export default function Header() {
@@ -23,7 +24,11 @@ export default function Header() {
     <header className='flex justify-end items-center px-6 py-3 md:px-10 md:py-5 border-b border-b-stone-200'>
         <nav className='flex space-x-5'>
             <NavButton to = {linkTo}>Report</NavButton>
-          {user && <div className='flex items-center'><p>welcome {user.userName}</p> <Button onClick={handleLogout}>Logout</Button></div>}
+          {user && <div className='flex items-center'><p>welcome {user.userName}</p> <Button onClick={handleLogout}>Logout</Button>
+          <Link to="/my-reports">My Reports</Link>
+          </div>
+          
+}
         </nav>
     </header>
   )
