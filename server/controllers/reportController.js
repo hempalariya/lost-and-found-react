@@ -75,9 +75,34 @@ export const getMyReports = async (req, res) => {
   try {
     const userId = req.user?._id || req.user?.id;
     if (!userId) return res.status(401).json({ message: "Not authorized" });
-    const reports = await Report.find({ createdBy: userId }).sort({ createdAt: -1 });
+    const reports = await Report.find({ createdBy: userId }).sort({
+      createdAt: -1,
+    });
     res.status(200).json(reports);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
+
+export const markReturned = async (req, res) => {
+  try {
+    const userId = req.user?._id || req.user?.id;
+
+    const report = await Report.findOne({
+      _id: req.params.id,
+      createdBy: userId,
+    });
+
+    if (!report)
+      return res.status(404).json({ message: "Report not found or not authorized" });
+
+    report.status = "returned";
+    await report.save();
+
+    res.json({ message: "Marked as returned", report });
+
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+

@@ -1,41 +1,48 @@
-import mongoose from 'mongoose'
+import mongoose from "mongoose";
 
-const reportSchema = new mongoose.Schema({
+const reportSchema = new mongoose.Schema(
+  {
     itemName: {
-        type: String,
-        required:true
+      type: String,
+      required: true,
     },
     description: {
-        type: String,
-        required: true
-    }, 
+      type: String,
+      required: true,
+    },
     location: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     reportType: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     image: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     contactName: {
-        type: String,
+      type: String,
     },
     contactEmail: {
-        type: String
+      type: String,
     },
     contactNumber: {
-        type: String
+      type: String,
     },
     createdBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User"
-    }
-}, {timestamps: true})
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+    status: {
+      type: String,
+      default: "active",
+    },
+  },
+  { timestamps: true }
+);
 
-const Report = mongoose.model("Report", reportSchema)
+const Report = mongoose.model("Report", reportSchema);
 
-export default Report
+export default Report;

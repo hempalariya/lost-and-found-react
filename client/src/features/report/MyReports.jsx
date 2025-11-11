@@ -1,6 +1,5 @@
-
 import React, { useEffect, useState } from "react";
-import api from "../../utils/api";
+import axios from "../../utils/api";
 import ItemCard from "../../utils/ItemCard";
 import { useNavigate } from "react-router-dom";
 
@@ -21,7 +20,7 @@ export default function MyReports() {
           navigate("/login");
           return;
         }
-        const res = await api.get("/report/my-reports", {
+        const res = await axios.get("/report/my-reports", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setMyReports(res.data || []);
@@ -36,6 +35,17 @@ export default function MyReports() {
     fetchReports();
   }, [navigate]);
 
+  async function handleMarkReturned(id) {
+    const token = localStorage.getItem("token");
+    await axios.patch(`/report/${id}/returned`, null, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    setMyReports(
+      myReports.map((r) => (r._id === id ? { ...r, status: "returned" } : r))
+    );
+  }
+
   if (loading) return <div className="p-5">Loading...</div>;
   if (error) return <div className="p-5 text-red-500">{error}</div>;
 
@@ -44,7 +54,23 @@ export default function MyReports() {
       {myReports.length === 0 ? (
         <div>No reports found</div>
       ) : (
-        myReports.map((report) => <ItemCard key={report._id} item={report} />)
+        myReports.map((report) => (
+          <div key={report._id}>
+            <ItemCard item={report} />
+
+            {report.status === "active" ? (
+              <button
+                onClick={() => handleMarkReturned(report._id)}
+                className="mt-2 bg-green-600 text-white px-3 py-1 rounded"
+              >
+                Mark as Returned
+              </button>
+            ) : (
+              <p className="mt-2 text-green-700 font-semibold">✅ Returned</p>
+            )}
+            
+          </div>
+        ))
       )}
     </div>
   );

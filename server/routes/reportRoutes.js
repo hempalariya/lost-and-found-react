@@ -1,6 +1,6 @@
 import express from "express";
-import multer from "multer"
-import path from "path"
+import multer from "multer";
+import path from "path";
 
 import {
   createReport,
@@ -9,24 +9,21 @@ import {
   getReport,
   updateReport,
   deleteReport,
-  getMyReports
+  getMyReports,
+  markReturned,
 } from "../controllers/reportController.js";
 import protect from "../middleware/auth.js";
 
-
 const storage = multer.diskStorage({
-    destination: function (req, res, cb){
-        cb(null, 'uploads/')
-    },
-    filename: function(req, file, cb){
-        cb(null, Date.now() + '-' + path.extname(file.originalname))
-    }
+  destination: function (req, res, cb) {
+    cb(null, "uploads/");
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + "-" + path.extname(file.originalname));
+  },
+});
 
-})
-
-const upload = multer({storage: storage})
-
-
+const upload = multer({ storage: storage });
 
 const reportRouter = express.Router();
 
@@ -35,6 +32,8 @@ reportRouter.get("/lost-report", getLostReport);
 reportRouter.get("/found-report", getFoundReport);
 reportRouter.delete("/delete-report", deleteReport);
 
-reportRouter.get("/my-reports", protect, getMyReports)
-reportRouter.get("/:id", getReport)
+reportRouter.get("/my-reports", protect, getMyReports);
+reportRouter.get("/:id", getReport);
+reportRouter.patch("/:id/returned", protect, markReturned);
+
 export default reportRouter;
