@@ -10,7 +10,6 @@ export default function Header() {
   const dispatch = useDispatch();
   const linkTo = !user ? "/login" : "/report";
 
-  if (user) console.log(user);
   function handleLogout() {
     dispatch(logout());
   }

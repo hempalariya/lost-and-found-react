@@ -8,7 +8,6 @@ import { Link } from "react-router-dom";
 export default function ItemCard({ item }) {
   const { user } = useSelector((state) => state.user);
 
-  console.log(item);
   const linkTo = !user ? "/login" : `/report/${item._id}`;
 
   return (

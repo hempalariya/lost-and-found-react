@@ -7,6 +7,7 @@ import Login from "./features/auth/Login";
 import Report from "./features/report/Report";
 import ReportDetails from "./features/report/ReportDetails";
 import MyReports from "./features/report/MyReports";
+import ChatRoom from "./features/chat/ChatRoom";
 
 const router = createBrowserRouter([
   {
@@ -33,8 +34,12 @@ const router = createBrowserRouter([
         element: <ReportDetails />,
       },
       {
-        path: "my-reports",
+        path: "/my-reports",
         element: <MyReports />
+      },
+      {
+        path: "/chat/:id",
+        element: <ChatRoom />
       }
     ],
   },

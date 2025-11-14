@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import axios from "../../utils/api";
 
 export default function ReportDetails() {
@@ -54,6 +54,9 @@ export default function ReportDetails() {
           )}
         </div>
       )}
+          <Link to={`/chat/${report._id}`} className="border px-3 py-2 rounded">
+            Message Owner
+          </Link>
     </div>
   );
 }
