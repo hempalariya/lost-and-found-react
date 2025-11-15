@@ -12,11 +12,16 @@ const messageSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    senderName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
     text: { type: String, required: true },
   },
   { timestamps: true }
 );
 
-const Chat = mongoose.model("Message", messageSchema);
+const ChatMessage = mongoose.model("ChatMessage", messageSchema);
 
-export default Chat;
+export default ChatMessage;
