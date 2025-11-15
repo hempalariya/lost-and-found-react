@@ -1,3 +1,4 @@
+import dotenv from "dotenv"
 import http from "http";
 import express from "express";
 import cors from "cors";
@@ -6,6 +7,8 @@ import connectDB from "./config/db.js";
 import userRouter from "./routes/userRoutes.js";
 import reportRouter from "./routes/reportRoutes.js";
 import chatRouter from "./routes/chatRoutes.js";
+
+dotenv.config()
 
 const app = express();
 
