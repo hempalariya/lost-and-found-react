@@ -1,4 +1,4 @@
-import dotenv from "dotenv"
+import dotenv from "dotenv";
 import http from "http";
 import express from "express";
 import cors from "cors";
@@ -8,38 +8,42 @@ import userRouter from "./routes/userRoutes.js";
 import reportRouter from "./routes/reportRoutes.js";
 import chatRouter from "./routes/chatRoutes.js";
 
-dotenv.config()
+dotenv.config();
 
 const app = express();
 
 const server = http.createServer(app);
 
 const io = new Server(server, {
-  cors: { origin: "http://localhost:5173",
-    methods: ["GET", "POST"]
-   },
+  cors: { origin: "http://localhost:5173", methods: ["GET", "POST"] },
 });
 
 app.set("io", io);
 
 io.on("connection", (socket) => {
-  console.log("user connected", socket.id)
+  console.log("user connected", socket.id);
   socket.on("join_room", (roomId) => {
     if (roomId) {
       socket.join(roomId.toString());
     }
-  })
+  });
   socket.on("leave_room", (roomId) => {
     if (roomId) {
       socket.leave(roomId.toString());
     }
-  })
+  });
   socket.on("disconnect", () => {
-    console.log("user disconnected")
-  })
-})
+    console.log("user disconnected");
+  });
+});
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+    methods: "GET, POST, PUT, DELETE",
+    credentials: true,
+  })
+);
 app.use("/uploads", express.static("uploads"));
 
 connectDB();
