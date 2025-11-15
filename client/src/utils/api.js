@@ -1,8 +1,6 @@
-import axios from "axios";
-import { API_BASE_URL } from "./config";
+import axios from 'axios'
 
-const api = axios.create({
-  baseURL: API_BASE_URL,
-});
-
-export default api;
+export default axios.create({
+    // baseURL : 'http://localhost:5000/api/v1'
+    baseURL: 'https://lost-and-found-react.onrender.com/api/v1'
+})

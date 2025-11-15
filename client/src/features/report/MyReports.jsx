@@ -7,8 +7,6 @@ export default function MyReports() {
   const [myReports, setMyReports] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [updatingId, setUpdatingId] = useState(null);
-  const [infoMessage, setInfoMessage] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,34 +37,13 @@ export default function MyReports() {
 
   async function handleMarkReturned(id) {
     const token = localStorage.getItem("token");
-    if (!token) {
-      setError("Not authenticated");
-      navigate("/login");
-      return;
-    }
-    try {
-      setUpdatingId(id);
-      setInfoMessage("");
-      const response = await axios.patch(`/report/${id}/returned`, null, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const updatedReport = response.data?.report;
+    await axios.patch(`/report/${id}/returned`, null, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
 
-      setMyReports((prev) =>
-        prev.map((r) =>
-          r._id === id
-            ? { ...r, status: updatedReport?.status || "returned" }
-            : r
-        )
-      );
-      setInfoMessage(response.data?.message || "Report marked as returned.");
-    } catch (err) {
-      const message =
-        err.response?.data?.message || "Unable to update the report status.";
-      setError(message);
-    } finally {
-      setUpdatingId(null);
-    }
+    setMyReports(
+      myReports.map((r) => (r._id === id ? { ...r, status: "returned" } : r))
+    );
   }
 
   if (loading) return <div className="p-5">Loading...</div>;
@@ -74,11 +51,6 @@ export default function MyReports() {
 
   return (
     <div className="p-5 grid gap-4 md:grid-cols-3">
-      {infoMessage && (
-        <p className="md:col-span-3 text-green-700 font-semibold">
-          {infoMessage}
-        </p>
-      )}
       {myReports.length === 0 ? (
         <div>No reports found</div>
       ) : (
@@ -89,14 +61,14 @@ export default function MyReports() {
             {report.status === "active" ? (
               <button
                 onClick={() => handleMarkReturned(report._id)}
-                className="mt-2 bg-green-600 text-white px-3 py-1 rounded disabled:opacity-50"
-                disabled={updatingId === report._id}
+                className="mt-2 bg-green-600 text-white px-3 py-1 rounded"
               >
-                {updatingId === report._id ? "Updating..." : "Mark as Returned"}
+                Mark as Returned
               </button>
             ) : (
-              <p className="mt-2 text-green-700 font-semibold">✓ Returned</p>
+              <p className="mt-2 text-green-700 font-semibold">✅ Returned</p>
             )}
+            
           </div>
         ))
       )}
