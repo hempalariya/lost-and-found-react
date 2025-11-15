@@ -78,6 +78,7 @@ export default function Report() {
         <input
           type="text"
           name="location"
+          value={reportData.location}
           placeholder="locaction"
           className={inputStyle}
           onChange={(e) => {
@@ -88,6 +89,7 @@ export default function Report() {
         />
         <select
           name="reportType"
+          value={reportData.reportType}
           id=""
           onChange={(e) => {
             let name = e.target.name;

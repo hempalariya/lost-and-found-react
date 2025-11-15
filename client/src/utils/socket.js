@@ -1,2 +1,6 @@
-import {io} from "socket.io-client"
-export const socket = io("http://localhost:5000")
+import { io } from "socket.io-client";
+import { SOCKET_BASE_URL } from "./config";
+
+export const socket = io(SOCKET_BASE_URL, {
+  withCredentials: true,
+});

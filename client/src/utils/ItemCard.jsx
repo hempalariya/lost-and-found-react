@@ -1,9 +1,9 @@
 import React from "react";
 import { IoLocationOutline } from "react-icons/io5";
 
-import NavButton from "./NavButton";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { buildAssetUrl } from "./config";
 
 export default function ItemCard({ item }) {
   const { user } = useSelector((state) => state.user);
@@ -15,8 +15,8 @@ export default function ItemCard({ item }) {
       <div className="flex w-full gap-4 p-2 h-52 ring ring-stone-300 relative">
         <div className="w-32 overflow-hidden">
           <img
-            src={`http://localhost:5000/${item.image}`}
-            alt=""
+            src={buildAssetUrl(item.image)}
+            alt={item.itemName}
             className="h-full"
           />
         </div>

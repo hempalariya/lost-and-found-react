@@ -12,10 +12,38 @@ dotenv.config();
 
 const app = express();
 
+const clientOrigins =
+  process.env.CLIENT_URLS ||
+  process.env.CLIENT_URL ||
+  "http://localhost:5173";
+const allowedOrigins = clientOrigins
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+const isOriginAllowed = (origin) =>
+  !origin || allowedOrigins.length === 0 || allowedOrigins.includes(origin);
+
+const corsOptions = {
+  origin(origin, callback) {
+    if (isOriginAllowed(origin)) {
+      return callback(null, true);
+    }
+    console.warn(`Blocked CORS request from: ${origin}`);
+    return callback(null, false);
+  },
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  credentials: true,
+};
+
 const server = http.createServer(app);
 
 const io = new Server(server, {
-  cors: { origin: "http://localhost:5173", methods: ["GET", "POST"] },
+  cors: {
+    origin: allowedOrigins.length ? allowedOrigins : true,
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
 });
 
 app.set("io", io);
@@ -37,13 +65,7 @@ io.on("connection", (socket) => {
   });
 });
 
-app.use(
-  cors({
-    origin: "*",
-    methods: "GET, POST, PUT, DELETE",
-    credentials: true,
-  })
-);
+app.use(cors(corsOptions));
 app.use("/uploads", express.static("uploads"));
 
 connectDB();
