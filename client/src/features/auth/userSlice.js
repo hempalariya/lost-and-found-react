@@ -63,11 +63,13 @@ const userSlice = createSlice({
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload?.newUser || null;
+        state.token = action.payload?.token || null;
         state.message = action.payload?.message || "Registration successful";
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message || "Registration failed";
+        state.token = null;
       })
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
@@ -75,11 +77,13 @@ const userSlice = createSlice({
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload?.user || null;
+        state.token = action.payload?.token || null;
         state.message = "Login successful";
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message || "Invalid credentials";
+        state.token = null;
       });
   },
 });
