@@ -18,6 +18,18 @@ const ensureValidReport = async (reportId) => {
   return Report.findById(reportId).select("_id");
 };
 
+const markMessagesAsRead = async (reportId, userId) => {
+  if (!userId) return;
+  await ChatMessage.updateMany(
+    {
+      reportId,
+      sender: { $ne: userId },
+      readBy: { $ne: userId },
+    },
+    { $addToSet: { readBy: userId } }
+  );
+};
+
 export const getMessages = async (req, res) => {
   try {
     const { reportId } = req.params;
@@ -31,12 +43,59 @@ export const getMessages = async (req, res) => {
       .sort({ createdAt: 1 })
       .lean();
 
+    await markMessagesAsRead(report._id, req.user?._id);
+
     const serialized = messages.map(formatMessageForClient);
 
     return res.json(serialized);
   } catch (error) {
     console.error("Failed to fetch messages:", error.message);
     return res.status(500).json({ message: "Unable to load messages" });
+  }
+};
+
+export const getUnreadCount = async (req, res) => {
+  try {
+    const { reportId } = req.params;
+    const report = await ensureValidReport(reportId);
+    const userId = req.user?._id;
+
+    if (!report) {
+      return res.status(404).json({ message: "Report not found" });
+    }
+
+    if (!userId) {
+      return res.status(401).json({ message: "Not authorized" });
+    }
+
+    const unreadCount = await ChatMessage.countDocuments({
+      reportId: report._id,
+      sender: { $ne: userId },
+      readBy: { $ne: userId },
+    });
+
+    return res.json({ unread: unreadCount });
+  } catch (error) {
+    console.error("Failed to fetch unread count:", error.message);
+    return res.status(500).json({ message: "Unable to load unread count" });
+  }
+};
+
+export const markConversationRead = async (req, res) => {
+  try {
+    const { reportId } = req.params;
+    const report = await ensureValidReport(reportId);
+    const userId = req.user?._id;
+
+    if (!report) return res.status(404).json({ message: "Report not found" });
+    if (!userId) return res.status(401).json({ message: "Not authorized" });
+
+    await markMessagesAsRead(report._id, userId);
+
+    return res.json({ success: true });
+  } catch (error) {
+    console.error("Failed to mark messages as read:", error.message);
+    return res.status(500).json({ message: "Unable to mark as read" });
   }
 };
 
@@ -62,6 +121,7 @@ export const createMessage = async (req, res) => {
       sender: req.user._id,
       senderName,
       text: trimmedText,
+      readBy: [req.user._id],
     });
 
     const serialized = formatMessageForClient(newMessage);

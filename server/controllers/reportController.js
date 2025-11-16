@@ -55,7 +55,7 @@ export const getFoundReport = async (req, res) => {
 
 export const getReport = async (req, res) => {
   try {
-    const report = await Report.findById(req.params.id);
+    const report = await Report.findById(req.params.id).populate('createdBy', 'userName')
     if (!report) return res.status(404).json({ message: "Report not found" });
     res.json(report);
   } catch (error) {

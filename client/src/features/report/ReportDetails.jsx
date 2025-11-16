@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 import axios from "../../utils/api";
 
 export default function ReportDetails() {
   const { id } = useParams();
   const [report, setReport] = useState(null);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const { token } = useSelector((state) => state.user);
+
   useEffect(() => {
     async function fetchReport() {
       const response = await axios.get(`/report/${id}`);
@@ -13,6 +17,30 @@ export default function ReportDetails() {
     fetchReport();
   }, [id]);
 
+  useEffect(() => {
+    let isMounted = true;
+    if (!id || !token) {
+      setUnreadCount(0);
+      return;
+    }
+
+    axios
+      .get(`/chat/${id}/unread-count`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(({ data }) => {
+        if (isMounted) setUnreadCount(data?.unread || 0);
+      })
+      .catch(() => {
+        if (isMounted) setUnreadCount(0);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [id, token]);
+
+  console.log(report)
   if (!report) return <p>loading...</p>;
   return (
     <div className="p-5 md:w-130 m-auto">
@@ -22,7 +50,7 @@ export default function ReportDetails() {
           className="w-full h-60 object-cover rounded mb-5"
         />
       )}
-
+      <p>Reported by: {report.createdBy.userName}</p>
       <h1 className="text-2xl font-bold">{report.itemName}</h1>
       <p className="text-lg mt-2">{report.description}</p>
       <p className="text-gray-700 mt-2">📍 {report.location}</p>
@@ -54,9 +82,17 @@ export default function ReportDetails() {
           )}
         </div>
       )}
-          <Link to={`/chat/${report._id}`} className="border px-3 py-2 rounded">
-            Message Owner
-          </Link>
+      <Link
+        to={`/chat/${report._id}`}
+        className="border px-3 py-2 rounded inline-flex items-center gap-2 relative"
+      >
+        <span>Message</span>
+        {unreadCount > 0 && (
+          <span className="bg-red-500 text-white text-xs font-semibold px-2 py-0.5 rounded-full min-w-[1.5rem] text-center">
+            {unreadCount}
+          </span>
+        )}
+      </Link>
     </div>
   );
 }

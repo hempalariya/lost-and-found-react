@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { socket } from "../../utils/socket";
@@ -12,6 +12,17 @@ export default function ChatRoom() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef(null);
+
+  const markConversationRead = useCallback(() => {
+    if (!reportId || !token) return;
+    axios
+      .post(
+        `/chat/${reportId}/read`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      .catch(() => {});
+  }, [reportId, token]);
 
   useEffect(() => {
     if (!reportId || !token) {
@@ -31,6 +42,7 @@ export default function ChatRoom() {
       .then(({ data }) => {
         if (isMounted) {
           setMessages(data);
+          markConversationRead();
         }
       })
       .catch((err) => {
@@ -49,7 +61,7 @@ export default function ChatRoom() {
     return () => {
       isMounted = false;
     };
-  }, [reportId, token]);
+  }, [markConversationRead, reportId, token]);
 
   useEffect(() => {
     if (!reportId || !token) return;
@@ -60,6 +72,7 @@ export default function ChatRoom() {
         const exists = prev.some((msg) => msg._id === incoming._id);
         return exists ? prev : [...prev, incoming];
       });
+      markConversationRead();
     };
 
     socket.emit("join_room", reportId);
@@ -69,7 +82,7 @@ export default function ChatRoom() {
       socket.emit("leave_room", reportId);
       socket.off("receive_message", handleIncomingMessage);
     };
-  }, [reportId, token]);
+  }, [markConversationRead, reportId, token]);
 
   useEffect(() => {
     if (!scrollRef.current) return;

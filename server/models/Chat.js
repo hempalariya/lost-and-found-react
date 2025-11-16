@@ -18,6 +18,15 @@ const messageSchema = new mongoose.Schema(
       trim: true,
     },
     text: { type: String, required: true },
+    readBy: {
+      type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
+      ],
+      default: [],
+    },
   },
   { timestamps: true }
 );
