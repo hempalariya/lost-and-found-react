@@ -15,7 +15,9 @@ export default function Header() {
   }
 
   return (
-    <header className="flex justify-end items-center px-6 py-3 md:px-10 md:py-5 border-b border-b-stone-200">
+    <header className="flex justify-between items-center px-6 py-3 md:px-10 md:py-5 border-b border-b-stone-200">
+      <Link to={"/"}><img src="./logo.png" alt="" className="h-10" /></Link>
+      
       <nav className="flex space-x-5">
         <NavButton to={linkTo}>Report</NavButton>
         {user && (

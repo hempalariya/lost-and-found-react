@@ -12,7 +12,6 @@ export default function Login() {
   const navigate = useNavigate();
   const { loading, error, user } = useSelector((state) => state.user);
 
-  console.log(loading, error, user)
 
   const [form, setForm] = useState({ email: "", password: "" });
 
