@@ -15,7 +15,8 @@ export default function ItemCard({ item }) {
       <div className="flex w-full gap-4 p-2 h-52 ring ring-stone-300 relative">
         <div className="w-32 overflow-hidden">
           <img
-            src={`http://localhost:5000/${item.image}`}
+            // src={`http://localhost:5000/${item.image}`}
+            src={`https://lost-and-found-react.onrender.com/${item.image}`}
             alt=""
             className="h-full"
           />
