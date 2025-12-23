@@ -11,6 +11,7 @@ import {
   deleteReport,
   getMyReports,
   markReturned,
+  getReportMatches,
 } from "../controllers/reportController.js";
 import protect from "../middleware/auth.js";
 
@@ -33,6 +34,7 @@ reportRouter.get("/found-report", getFoundReport);
 reportRouter.delete("/delete-report", deleteReport);
 
 reportRouter.get("/my-reports", protect, getMyReports);
+reportRouter.get("/:id/matches", getReportMatches);
 reportRouter.get("/:id", getReport);
 reportRouter.patch("/:id/returned", protect, markReturned);
 

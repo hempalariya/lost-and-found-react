@@ -7,6 +7,11 @@ export default function ReportDetails() {
   const { id } = useParams();
   const [report, setReport] = useState(null);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [matches, setMatches] = useState([]);
+  const [matchStatus, setMatchStatus] = useState({
+    loading: true,
+    error: null,
+  });
   const { token } = useSelector((state) => state.user);
 
   useEffect(() => {
@@ -39,6 +44,29 @@ export default function ReportDetails() {
       isMounted = false;
     };
   }, [id, token]);
+
+  useEffect(() => {
+    let isMounted = true;
+    async function fetchMatches() {
+      try {
+        setMatchStatus({ loading: true, error: null });
+        const { data } = await axios.get(`/report/${id}/matches`);
+        if (isMounted) {
+          setMatches(data?.matches || []);
+          setMatchStatus({ loading: false, error: null });
+        }
+      } catch (err) {
+        const message = err.response?.data?.message || err.message;
+        if (isMounted) {
+          setMatchStatus({ loading: false, error: message });
+        }
+      }
+    }
+    if (id) fetchMatches();
+    return () => {
+      isMounted = false;
+    };
+  }, [id]);
 
   console.log(report)
   if (!report) return <p>loading...</p>;
@@ -93,6 +121,45 @@ export default function ReportDetails() {
           </span>
         )}
       </Link>
+      <div className="mt-8">
+        <h2 className="text-xl font-semibold mb-3">Possible matches</h2>
+        {matchStatus.loading ? (
+          <p>Checking reports...</p>
+        ) : matchStatus.error ? (
+          <p className="text-red-500">{matchStatus.error}</p>
+        ) : matches.length === 0 ? (
+          <p>No matches yet. New reports will be checked automatically.</p>
+        ) : (
+          <div className="grid gap-4 md:grid-cols-2">
+            {matches.map((match) => (
+              <Link
+                key={match.report._id}
+                to={`/report/${match.report._id}`}
+                className="border rounded-lg p-3 flex gap-3 hover:shadow"
+              >
+                {match.report.image && (
+                  <img
+                    src={`http://localhost:5000/${match.report.image}`}
+                    alt={match.report.itemName}
+                    className="w-24 h-24 object-cover rounded"
+                  />
+                )}
+                <div>
+                  <p className="text-lg font-semibold">
+                    {match.report.itemName}
+                  </p>
+                  <p className="text-sm text-gray-700 line-clamp-2">
+                    {match.report.description}
+                  </p>
+                  <p className="text-xs text-green-700 mt-1">
+                    {match.reason || "AI suggested match"}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
