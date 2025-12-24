@@ -68,13 +68,13 @@ export default function ReportDetails() {
     };
   }, [id]);
 
-  console.log(report)
+  console.log(report);
   if (!report) return <p>loading...</p>;
   return (
     <div className="p-5 md:w-130 m-auto">
       {report.image && (
         <img
-          src={`http://localhost:5000/${report.image}`}
+          src={`https://lost-and-found-react.onrender.com/${item.image}/${report.image}`}
           className="w-full h-60 object-cover rounded mb-5"
         />
       )}
@@ -139,7 +139,7 @@ export default function ReportDetails() {
               >
                 {match.report.image && (
                   <img
-                    src={`http://localhost:5000/${match.report.image}`}
+                    src={`https://lost-and-found-react.onrender.com/${item.image}/${match.report.image}`}
                     alt={match.report.itemName}
                     className="w-24 h-24 object-cover rounded"
                   />
